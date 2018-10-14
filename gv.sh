@@ -165,7 +165,7 @@ function init {
 # A COMPLETER!
 #
 ##########################################################################
-
+#./gv.sh ajouter --qte=29 Beaujolais 2017 Foillard 22.00
 
 #===========
 # Commande lister
@@ -208,7 +208,18 @@ function lister {
 #===========
 
 function ajouter {
-    verifier_arguments_en_trop "$@"
+    #verifier_arguments_en_trop "$@"
+    quantite=1
+    type=rouge
+    if [[ ($@ == *" --qte="*) || ($@ == "--qte="*)]]; then
+        quantite=$(echo "$@" | grep -oP '(?<=--qte=)[0-9][0-9]?')
+        echo $quantite
+    fi
+    if [[ ($@ == *" --type="*) || ($@ == "--type="*)]]; then
+        type=$(echo "$@" | grep -oP '(?<=--type=)[^ ]+')
+        echo $type
+    fi
+    #generer_enregistrement_vin
 }
 
 #===========
