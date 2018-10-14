@@ -185,7 +185,7 @@ function lister {
     elif [[ ($@ == "--long") || ($@ == "--format=long") || ($@ == '')]]; then
         awk -F":" '{printf "%s [%-5s  -  %s$]: %s %s, %s (%s) => %s {%s}\n", $1, $3, $7, $4, $5, $6, $2, $8, $9}' $le_depot
     else
-        echo 'le reste'
+        echo ''
     fi
 }
 
@@ -295,7 +295,6 @@ function selectionner {
         fi
     fi
     verifier_arguments_en_trop "$@"
-    
     if [ -s $le_depot ]; then
         #Traiter tous les cas selon ce qui a ete recu
         if [[ ($argument == "--bus") ]]; then
@@ -324,8 +323,48 @@ function selectionner {
 # - depot inexistant
 # - nombre incorrect d'arguments
 #===========
-function trier {
-    verifier_arguments_en_trop "$@"
+function trier { 
+    if [ $# -le 2 ]; then
+        sortVar="sort -t: -k1"
+        while [ $# -ne 0 ]
+            do
+            case "$1" in
+            "--appellation")
+                sortVar="sort -t: -k4"
+            ;;
+            "--date-achat")
+                sortVar="sort -t: -k2"
+            ;;
+            "--millesime")
+                sortVar="sort -t: -nk5"
+            ;;
+            "--nom")
+                sortVar="sort -t: -k6"
+            ;;
+            "--numero" | "")
+                sortVar="sort -t: -nk1"
+            ;;
+            "--prix")
+                sortVar="sort -t: -nk7"
+            ;;
+            "--CLE")
+                sortVar="sort -t: -k1"
+            ;;
+            "--reverse")
+                sortVar="$sortVar -r"
+            ;;
+            *)
+                verifier_arguments_en_trop "$@"
+            ;;
+            esac
+            shift
+        done
+        verifier_arguments_en_trop "$@"
+        $sortVar $le_depot
+    else
+        shift 2
+        verifier_arguments_en_trop "$@"
+    fi
 }
 
 #===========
