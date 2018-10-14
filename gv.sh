@@ -208,18 +208,38 @@ function lister {
 #===========
 
 function ajouter {
-    #verifier_arguments_en_trop "$@"
     quantite=1
     type=rouge
+    nbArguments=0
+    
+    # Valider les arguments
     if [[ ($@ == *" --qte="*) || ($@ == "--qte="*)]]; then
         quantite=$(echo "$@" | grep -oP '(?<=--qte=)[0-9][0-9]?')
-        echo $quantite
+        nbArguments=$((nbArguments + 1))
     fi
     if [[ ($@ == *" --type="*) || ($@ == "--type="*)]]; then
         type=$(echo "$@" | grep -oP '(?<=--type=)[^ ]+')
-        echo $type
+        nbArguments=$((nbArguments + 1))
     fi
-    #generer_enregistrement_vin
+    # Enlever les arguments pour passer aux valeurs
+    if [[ ($nbArguments == 1) ]]; then
+        shift
+    fi
+    if [[ ($nbArguments == 2) ]]; then
+        shift 2
+    fi
+    
+    #Avoir le numéro du prochain enregistrement a ajouter
+    numEntree=$(awk -F":" '{w=$1} END{print w}' $le_depot)
+    numEntree=$((numEntree + 1))
+    #Prendre toutes les valeurs
+    apellation=$1
+    millesime=$2
+    nom=$3
+    prix=$4
+    shift 4
+    verifier_arguments_en_trop "$@"
+    generer_enregistrement_vin $numEntree $type $apellation $millesime $nom $prix >> $le_depot
 }
 
 #===========
