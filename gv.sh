@@ -278,7 +278,37 @@ function noter {
 # - depot inexistant
 #===========
 function selectionner {
+    argument=''
+    motif=''
+    #Vérifier si un argument, un motif ou les deux sont recus
+    if [ "$#" -ne 0 ]; then
+        if [[ ($1 != "--bus") && ($1 != "--non-bus") && ($1 != "--tous") && ($1 != "")]]; then
+            motif=$1
+            shift
+        elif [ "$#" -eq 2 ]; then
+            argument=$1
+            motif=$2
+            shift 2
+        else
+            argument=$1
+            shift
+        fi
+    fi
     verifier_arguments_en_trop "$@"
+    
+    if [ -s $le_depot ]; then
+        #Traiter tous les cas selon ce qui a ete recu
+        if [[ ($argument == "--bus") ]]; then
+            grep -E "^(([^:]*:){8}).+" $le_depot | grep -E "$motif"
+        elif [[ ($argument == "--non-bus") ]]; then
+            grep -E "^([^:]*:){7}:"  $le_depot | grep -E "$motif"
+        elif [[ ($argument == "--tous") ||  ($argument == "") ]]; then
+            grep "^\w.*" $le_depot | grep -E "$motif"
+        else
+            ''
+        fi
+    fi
+    
 }
 
 
