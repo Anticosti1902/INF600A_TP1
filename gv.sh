@@ -255,7 +255,14 @@ function ajouter {
 # - nombre invalide pour la note (0 a 5)
 #===========
 function noter {
+    numEntree=$1
+    note=$2
+    commentaire=$3
+    shift 3
     verifier_arguments_en_trop "$@"
+    ligneTrouve=$(grep -E "^$numEntree.*" $le_depot)
+    ligneModifiee=$(grep -E "^$numEntree.*" $le_depot | sed --expression="s/::/:$note:$commentaire/g")
+    sed -i -e "s|$ligneTrouve|$ligneModifiee|g" $le_depot
 }
 
 
