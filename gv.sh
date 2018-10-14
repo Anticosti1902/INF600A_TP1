@@ -179,7 +179,14 @@ function init {
 # - depot inexistant
 #===========
 function lister {
-    verifier_arguments_en_trop "$@"
+    #verifier_arguments_en_trop "$@"
+    if [[ ($@ == "--court") || ($@ == "--format=court")]]; then
+        awk -F":" '{printf "%s [%s$]: %s %s, %s\n", $1, $7, $4, $5, $6}' $le_depot
+    elif [[ ($@ == "--long") || ($@ == "--format=long") || ($@ == '')]]; then
+        awk -F":" '{printf "%s [%-5s  -  %s$]: %s %s, %s (%s) => %s {%s}\n", $1, $3, $7, $4, $5, $6, $2, $8, $9}' $le_depot
+    else
+        echo 'le reste'
+    fi
 }
 
 

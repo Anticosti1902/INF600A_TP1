@@ -115,17 +115,17 @@ end
 def genere_erreur( erreur )
   out, err, statut = yield
 
-  out.must_be_empty
-  err.join.must_match erreur
-  statut.wont_equal 0
+  assert_empty out, "*** Assertion echouee: stdout devrait etre vide mais contient des elements ***"
+  assert_match erreur, err.join, "*** Assertion echouee: Le message d'erreur ne semble pas etre celui attendu ***"
+  refute_equal 0, statut, "*** Assertion echouee: le 'exit status' est 0 mais devrait etre different de 0 ***"
 end
 
 # Execute une commande specifiee par le bloc, qui ne doit generer ni sortie, ni erreur
 def execute_sans_sortie_ou_erreur
   out, err, statut = yield
-  out.must_be_empty
-  err.must_be_empty
-  statut.must_equal 0
+  assert_empty out, "*** Assertion echouee: stdout devrait etre vide mais contient des elements ***"
+  assert_empty err, "*** Assertion echouee: stderr devrait etre vide mais contient des elements ***"
+  assert_equal 0, statut, "*** Assertion echouee: le 'exit status' est different de 0 alors qu'il devrait 0 ***"
 end
 
 # Execute une commande specifiee par le bloc, qui doit generer la sortie attendu.
@@ -135,13 +135,14 @@ def genere_sortie( attendu, strict = nil  )
   out, err, statut = yield
 
   if strict
-    out.must_equal attendu
+    assert_equal attendu, out, "*** Assertion echouee: La sortie emise sur stdout n'est pas *exactement* celle attendue (:strict => casse et blancs significatifs) ***"
   else
-    out.map { |l| l.gsub(/\s+/, "").downcase }
-        .must_equal attendu.map { |l| l.gsub(/\s+/, "").downcase }
+    obtenu = out.map { |l| l.gsub(/\s+/, "").downcase }
+    attendu = attendu.map { |l| l.gsub(/\s+/, "").downcase }
+    assert_equal attendu, obtenu, "*** Assertion echouee: La sortie emise sur stdout n'est pas celle attendue (meme en ignorant la casse et les blancs) ***"
   end
-  err.must_be_empty
-  statut.must_equal 0
+  assert_empty err, "*** Assertion echouee: stderr devrait etre vide mais contient des elements ***"
+  assert_equal 0, statut, "*** Assertion echouee: le 'exit status' est different de 0 alors qu'il devrait 0 ***"
 end
 
 # Execute une commande specifiee par le bloc, qui doit generer une sortie bien precise.

@@ -16,8 +16,8 @@ CODES_PERMANENTS='ABCD01020304,GHIJ11121314'
 # selon la commande en cours de developpement.
 
 # WIP: Exemples ou vrais tests
-WIP=wip_ex    # Pour executer les exemples
-#WIP=wip_test # Pour executer les vrais tests
+#WIP=wip_ex    # Pour executer les exemples
+WIP=wip_test # Pour executer les vrais tests
 
 # COMMANDE: Une commande specifique ou toutes (all)
 COMMANDE=lister

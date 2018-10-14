@@ -1,0 +1,8 @@
+++ RESULTATS DES TESTS ++
+-- NIVEAU=base ruby Tests/init_test.rb
+-- NIVEAU=base ruby Tests/ajouter_test.rb
+-- NIVEAU=base ruby Tests/lister_test.rb
+-- NIVEAU=base ruby Tests/supprimer_test.rb
+-- NIVEAU=base ruby Tests/noter_test.rb
+-- NIVEAU=base ruby Tests/selectionner_test.rb
+-- NIVEAU=base ruby Tests/trier_test.rb
