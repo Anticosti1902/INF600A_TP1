@@ -239,10 +239,21 @@ function ajouter {
     numEntree=$(awk -F":" '{w=$1} END{print w}' $le_depot)
     numEntree=$((numEntree + 1))
     #Prendre toutes les valeurs
+    if [ "$#" -ne 4 ]; then  
+        erreur "Nombre incorrect d'arguments"
+    fi
     apellation=$1
-    millesime=$2
+    if echo $2 | grep -E -q "^[1-2][0-9]{3}\$"; then
+        millesime=$2  
+    else
+        erreur "Nombre invalide pour le millesime"
+    fi
     nom=$3
-    prix=$4
+    if echo $4 | grep -E -q "^[0-9]+.[0-9]+\$"; then
+        prix=$4  
+    else
+        erreur "Nombre invalide pour le prix"
+    fi
     shift 4
     verifier_arguments_en_trop "$@"
     generer_enregistrement_vin $numEntree $type $apellation $millesime $nom $prix >> $le_depot
@@ -263,6 +274,9 @@ function ajouter {
 function noter {
     numEntree=$1
     note=$2
+    if [[ ($note > 5) || ($note <1) ]]; then
+        erreur "Nombre invalide"
+    fi
     commentaire=$3
     shift 3
     verifier_arguments_en_trop "$@"
@@ -427,6 +441,10 @@ function main {
     if [[ $# != 0 ]]; then
         if [[ $1 == "--depot="* ]]; then
             type=$(echo "$@" | grep -oP '(?<=--depot=)[^ ]+')
+            le_depot=$type
+            shift
+        fi
+        if  [[ ($1 == '-') ]];then
             le_depot=$type
             shift
         fi
