@@ -65,8 +65,8 @@ function erreur {
 
     # A COMPLETER: Les erreurs doivent etre emises stderr...
     # mais ce n'est pas le cas pour l'instant!
-    echo "*** Erreur: $msg"
-    echo ""
+    echo "*** Erreur: $msg" >&2
+    echo "" >&2
 
     # On emet le message d'aide si la commande fournie est invalide.
     # Par contre, ce message -- contrairement au precedent -- doit etre emis sur stdout.
@@ -151,7 +151,6 @@ function init {
             detruire=0
         fi
     fi
-
     if [[ -f $le_depot ]]; then
         # Depot existe deja.
         # On le detruit quand --detruire est specifie.
@@ -425,6 +424,13 @@ function main {
     # d'utilisation du flux stdin a ete specifie.
     # Si oui, il faut modifier le_depot (var. globale) en consequence!
     le_depot="$DEPOT_DEFAUT"
+    if [[ $# != 0 ]]; then
+        if [[ $1 == "--depot="* ]]; then
+            type=$(echo "$@" | grep -oP '(?<=--depot=)[^ ]+')
+            le_depot=$type
+            shift
+        fi
+    fi
     
     debug "On utilise le depot suivant:", $le_depot
 
@@ -454,3 +460,4 @@ function main {
 main "$@"
 
 exit 0
+
