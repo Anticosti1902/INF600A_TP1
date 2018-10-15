@@ -144,6 +144,13 @@ function verifier_arguments_en_trop {
 function init {
     local detruire=0
     # A COMPLETER: traitement de la switch --detruire!
+    if [ $# -eq 1 ]; then
+        if [[ $1 == '--detruire' ]]; then
+            shift
+            \rm -f $le_depot
+            detruire=0
+        fi
+    fi
 
     if [[ -f $le_depot ]]; then
         # Depot existe deja.
@@ -379,7 +386,16 @@ function trier {
 # - num_vin deja note
 #===========
 function supprimer {
+    numVin=$1
+    shift
     verifier_arguments_en_trop "$@"
+    ligneTrouve=$(grep -E "^$numVin.*(::)\$" $le_depot)
+    if [[ $ligneTrouve != '' ]]; then
+        echo $ligneTrouve
+        sed -i -e "s|$ligneTrouve||g" $le_depot
+        #cat $le_depot | grep . > $le_depot
+        #sed -i -E "$numVin"/d" $le_depot
+    fi
 }
 
 ##########################################################################
